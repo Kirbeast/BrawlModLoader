@@ -423,7 +423,7 @@ int FlyingButtonsMenu::MainLoop()
 	}
 	else if(homeBtn->GetState() == STATE_CLICKED)
 	{
-		Settings.Save();
+//		Settings.Save();
 		if(CurrentMenu) CurrentMenu->SetState(STATE_DISABLED);
 		WindowExitPrompt();
 		homeBtn->ResetState();

@@ -46,7 +46,7 @@ GlobalSettings::GlobalSettings()
 
 GlobalSettings::~GlobalSettings()
 {
-	Settings.Save();
+//	Settings.Save();
 
 	delete creditsImgData;
 	delete creditsImgOverData;

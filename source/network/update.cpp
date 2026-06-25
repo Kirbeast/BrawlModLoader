@@ -278,8 +278,8 @@ int ApplicationDownload()
 	snprintf(tmppath, sizeof(tmppath), "%s/icon.png", Settings.ConfigPath);
 	DownloadFileToPath("https://raw.githubusercontent.com/wiidev/usbloadergx/updates/icon.png", tmppath, false);
 
-	snprintf(tmppath, sizeof(tmppath), "%s/meta.xml", Settings.ConfigPath);
-	DownloadFileToPath("https://raw.githubusercontent.com/wiidev/usbloadergx/updates/meta.xml", tmppath, false);
+//	snprintf(tmppath, sizeof(tmppath), "%s/meta.xml", Settings.ConfigPath);
+//	DownloadFileToPath("https://raw.githubusercontent.com/wiidev/usbloadergx/updates/meta.xml", tmppath, false);
 
 	return 1;
 }
@@ -308,9 +308,9 @@ int UpdateNintendont()
 		if (!CheckFile(NINUpdatePath))
 			DownloadFileToPath("https://raw.githubusercontent.com/FIX94/Nintendont/master/nintendont/icon.png", NINUpdatePath, false);
 		// Download meta.xml if it doesn't exist (Nintendont will edit meta.xml when it's launched)
-		snprintf(NINUpdatePath, sizeof(NINUpdatePath), "%s/meta.xml", Settings.NINLoaderPath);
-		if (!CheckFile(NINUpdatePath))
-			DownloadFileToPath("https://raw.githubusercontent.com/FIX94/Nintendont/master/nintendont/meta.xml", NINUpdatePath, false);
+//		snprintf(NINUpdatePath, sizeof(NINUpdatePath), "%s/meta.xml", Settings.NINLoaderPath);
+//		if (!CheckFile(NINUpdatePath))
+//			DownloadFileToPath("https://raw.githubusercontent.com/FIX94/Nintendont/master/nintendont/meta.xml", NINUpdatePath, false);
 
 		return 1;
 	}

@@ -270,10 +270,10 @@ LoaderSettings::~LoaderSettings()
 		GCGames::Instance()->LoadAllGames();
 	}
 	
-	if (oldLoaderIOS != Settings.LoaderIOS)
-	{
-		editMetaArguments();
-	}
+//	if (oldLoaderIOS != Settings.LoaderIOS)
+//	{
+//		editMetaArguments();
+//	}
 }
 
 void LoaderSettings::SetOptionNames()

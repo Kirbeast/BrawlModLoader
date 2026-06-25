@@ -220,7 +220,7 @@ int MenuLanguageSelect()
 			if ( choice == 1 )
 			{
 				Settings.LoadLanguage(NULL, CONSOLE_DEFAULT);
-				Settings.Save();
+//				Settings.Save();
 				returnhere = 2;
 			}
 			defaultBtn.ResetState();
@@ -288,7 +288,7 @@ int MenuLanguageSelect()
 				{
 					Settings.LoadLanguage(newLangPath);
 				}
-				Settings.Save();
+//				Settings.Save();
 				returnhere = 2;
 				break;
 			}

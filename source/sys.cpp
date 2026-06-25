@@ -92,10 +92,10 @@ void AppCleanUp(void)
 	app_clean = true;
 
 	BannerAsync::ThreadExit();
-
+/*
 	GameTitles.WriteCachedTitles(Settings.titlestxt_path);
 	Settings.Save();
-
+*/
 	ExitGUIThreads();
 	StopGX();
 	wiilight(0);
@@ -244,7 +244,7 @@ void Sys_LoadHBC(void)
 bool RebootApp(void)
 {
 	// Be sure to use current settings as arguments
-	editMetaArguments();
+//	editMetaArguments();
 	
 #ifdef FULLCHANNEL
 	ExitApp();

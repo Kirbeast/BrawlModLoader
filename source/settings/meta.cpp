@@ -23,7 +23,7 @@ distribution.
 #include "settings/CSettings.h"
 #include "xml/pugixml.hpp"
 #include "gecko.h"
-
+/*
 int editMetaArguments()
 {
 	if (Settings.skipSaving)
@@ -77,3 +77,4 @@ int editMetaArguments()
 
 	return res;
 }
+*/

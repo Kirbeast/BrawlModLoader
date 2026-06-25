@@ -1013,7 +1013,7 @@ int WindowExitPrompt()
 					Sys_LoadMenu();
 				else if(ret == 3)
 				{
-					editMetaArguments();
+//					editMetaArguments();
 					ExitApp();
 					*(vu32 *)0x8132FFFB = 0x4461636F;
 					*(vu32 *)0x817FEFF0 = 0x4461636F;
@@ -1024,7 +1024,7 @@ int WindowExitPrompt()
 			}
 			else if (Settings.HomeMenu == HOME_MENU_PRIILOADER)
 			{
-				editMetaArguments();
+//				editMetaArguments();
 				ExitApp();
 				*(vu32 *)0x8132FFFB = 0x4461636F;
 				*(vu32 *)0x817FEFF0 = 0x4461636F;

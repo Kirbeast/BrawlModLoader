@@ -123,7 +123,7 @@ static int PartitionChoice()
 			ret = WBFS_OpenPart(part_num);
 
 			Settings.partition = part_num;
-			Settings.Save();
+//			Settings.Save();
 		}
 	}
 	else if(choice == 2)

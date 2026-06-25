@@ -14,7 +14,7 @@ include $(DEVKITPPC)/wii_rules
 # SOURCES is a list of directories containing source code
 # INCLUDES is a list of directories containing extra header files
 #---------------------------------------------------------------------------------
-TARGET		:=	boot
+TARGET		:=	loader
 BUILD		:=	build
 SOURCES		:=	source \
 				source/GUI \

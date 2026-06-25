@@ -532,7 +532,7 @@ int LoadGameConfig(const char *CheatFilepath)
 
 	FILE *fp;
 	char filepath[200];
-	snprintf(filepath, sizeof(filepath), "%s/gameconfig.txt", CheatFilepath);
+	snprintf(filepath, sizeof(filepath), "%s/gc.txt", CheatFilepath);
 
 	fp = fopen(filepath, "rb");
 

@@ -5,6 +5,8 @@
 #include <malloc.h>
 #include <sys/iosupport.h>
 
+short debug_to_file_setting = 0;
+
 // #define DEBUG_TO_FILE
 // #define WIFI_GECKO // don't keep this for released build
 
@@ -21,7 +23,7 @@ void gprintf(const char *format, ...)
 {
 	#ifndef DEBUG_TO_FILE
 		#ifndef WIFI_GECKO
-		if (!geckoinit)
+		if (!geckoinit && !debug_to_file_setting)
 			return;
 		#endif
 	#endif
@@ -42,7 +44,21 @@ void gprintf(const char *format, ...)
 			fclose(debugF);
 		}
 		#else
-		usb_sendbuffer(1, stringBuf, len);
+		if (debug_to_file_setting)
+		{
+			FILE *debugF = fopen("sd:/debug.txt", "a");
+			if (!debugF)
+				debugF = fopen("sd:/debug.txt", "w");
+			if (debugF)
+			{
+				fwrite(stringBuf, 1, strlen(stringBuf), debugF);
+				fclose(debugF);
+			}
+		}
+		else
+		{
+			usb_sendbuffer(1, stringBuf, len);
+		}
 		#endif
 		
 		#ifdef WIFI_GECKO

@@ -12,11 +12,12 @@ private:
 	StartUpProcess();
 	~StartUpProcess();
 	void LoadIOS(u8 ios, bool boot);
-	int Execute(bool quickGameBoot, bool isBadBoot);
-	int FinalizeExecute();
+	int Execute(bool quickGameBoot/*, bool isBadBoot*/);
+//	int FinalizeExecute();
 	bool USBSpinUp();
 	void TextFade(int direction);
 	void SetTextf(const char *format, ...);
+	void SetDebugTextf(const char *format, ...) __attribute__((format(printf, 2, 3)));
 	void Draw();
 	static int ParseArguments(int argc, char *argv[]);
 	static int QuickGameBoot(const char *gameID);
@@ -24,17 +25,17 @@ private:
 
 	bool drawCancel;
 
-	GuiImageData *GXImageData;
+//	GuiImageData *GXImageData;
 	GuiImage *background;
-	GuiImage *GXImage;
+//	GuiImage *GXImage;
 	GuiText *titleTxt;
 	GuiText *messageTxt;
 	GuiText *versionTxt;
 	GuiText *cancelTxt;
 	GuiButton *cancelBtn;
-	GuiButton *sdmodeBtn;
+//	GuiButton *sdmodeBtn;
 	GuiTrigger *trigB;
-	GuiTrigger *trigA;
+//	GuiTrigger *trigA;
 };
 
 #endif

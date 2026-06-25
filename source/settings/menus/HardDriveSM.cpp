@@ -134,10 +134,10 @@ HardDriveSM::~HardDriveSM()
 			gameList.LoadUnfiltered();
 		}
 		
-		if(NewSettingsUSBPort == -1)
-		{
-			editMetaArguments();
-		}
+	//	if(NewSettingsUSBPort == -1)
+	//	{
+	//		editMetaArguments();
+	//	}
 		if(OldSettingsSDMode != Settings.SDMode)
 		{
 			Settings.partition = 0;

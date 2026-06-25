@@ -2,22 +2,22 @@
 #include "StartUpProcess.h"
 #include "GUI/gui.h"
 #include "video.h"
-#include "audio.h"
+//#include "audio.h"
 #include "input.h"
 #include "themes/CTheme.h"
 #include "gecko.h"
 #include "wpad.h"
 #include "Controls/DeviceHandler.hpp"
 #include "wad/nandtitle.h"
-#include "SystemMenu/SystemMenuResources.h"
+//#include "SystemMenu/SystemMenuResources.h"
 #include "system/IosLoader.h"
 #include "libs/libruntimeiospatch/runtimeiospatch.h"
 #include "utils/timer.h"
 #include "settings/CSettings.h"
-#include "settings/CGameSettings.h"
-#include "settings/CGameStatistics.h"
-#include "settings/CGameCategories.hpp"
-#include "settings/GameTitles.h"
+//#include "settings/CGameSettings.h"
+//#include "settings/CGameStatistics.h"
+//#include "settings/CGameCategories.hpp"
+//#include "settings/GameTitles.h"
 #include "usbloader/usbstorage2.h"
 #include "usbloader/MountGamePartition.h"
 #include "usbloader/GameBooter.hpp"
@@ -26,7 +26,7 @@
 #include "utils/tools.h"
 #include "sys.h"
 #include "version.h"
-#include "settings/meta.h"
+//#include "settings/meta.h"
 
 extern bool isWiiVC; // in sys.cpp
 
@@ -36,37 +36,39 @@ StartUpProcess::StartUpProcess()
 	Theme::LoadFont("");
 
 	background = new GuiImage(screenwidth, screenheight, (GXColor){0, 0, 0, 255});
-
+/*
 	GXImageData = Resources::GetImageData("gxlogo.png");
 	GXImage = new GuiImage(GXImageData);
 	GXImage->SetAlignment(ALIGN_CENTER, ALIGN_MIDDLE);
 	GXImage->SetPosition(screenwidth / 2, screenheight / 2 - 50);
-
-	titleTxt = new GuiText("Loading...", 24, (GXColor){255, 255, 255, 255});
-	titleTxt->SetAlignment(ALIGN_CENTER, ALIGN_MIDDLE);
-	titleTxt->SetPosition(screenwidth / 2, screenheight / 2 + 30);
-
+*/
 	messageTxt = new GuiText(" ", 22, (GXColor){255, 255, 255, 255});
 	messageTxt->SetAlignment(ALIGN_CENTER, ALIGN_MIDDLE);
-	messageTxt->SetPosition(screenwidth / 2, screenheight / 2 + 60);
+	messageTxt->SetPosition(screenwidth / 2, screenheight / 2 + 30);
 
-	versionTxt = new GuiText(" ", 18, (GXColor){255, 255, 255, 255});
-	versionTxt->SetAlignment(ALIGN_LEFT, ALIGN_BOTTOM);
-	versionTxt->SetPosition(23, screenheight - 20);
+	if (debug_to_file_setting) {
+		titleTxt = new GuiText("Loading...", 24, (GXColor){255, 255, 255, 255});
+		titleTxt->SetAlignment(ALIGN_CENTER, ALIGN_MIDDLE);
+		titleTxt->SetPosition(screenwidth / 2, screenheight / 2);
 
-// Please don't release unofficial builds w/o tagging them as such
-#if defined(FULLCHANNEL)
-	versionTxt->SetTextf("v4.0c Rev. %s (%s)", LOADER_REV, GIT_VER);
-#elif defined(GITRELEASE)
-	versionTxt->SetTextf("v4.0 Rev. %s (%s)", LOADER_REV, GIT_VER);
-#else
-	versionTxt->SetTextf("v4.0 Rev. %s (%s) / Unofficial", LOADER_REV, GIT_VER);
-#endif
+		versionTxt = new GuiText(" ", 18, (GXColor){255, 255, 255, 255});
+		versionTxt->SetAlignment(ALIGN_LEFT, ALIGN_BOTTOM);
+		versionTxt->SetPosition(23, screenheight - 20);
 
-	if (strncmp(Settings.ConfigPath, "sd", 2) == 0)
-		cancelTxt = new GuiText("Press B to cancel or A to enable SD card mode", 22, (GXColor){255, 255, 255, 255});
-	else
-		cancelTxt = new GuiText("Press B to cancel", 22, (GXColor){255, 255, 255, 255});
+		// Please don't release unofficial builds w/o tagging them as such
+		#if defined(FULLCHANNEL)
+			versionTxt->SetTextf("v4.0c Rev. %s (%s)", LOADER_REV, GIT_VER);
+		#elif defined(GITRELEASE)
+			versionTxt->SetTextf("v4.0 Rev. %s (%s)", LOADER_REV, GIT_VER);
+		#else
+			versionTxt->SetTextf("v4.0 Rev. %s (%s) / Brawl Mod Loader", LOADER_REV, GIT_VER);
+		#endif
+	}
+
+//	if (strncmp(Settings.ConfigPath, "sd", 2) == 0)
+//		cancelTxt = new GuiText("Press B to cancel or A to enable SD card mode", 22, (GXColor){255, 255, 255, 255});
+//	else
+	cancelTxt = new GuiText("Press B to cancel", 22, (GXColor){255, 255, 255, 255});
 	cancelTxt->SetAlignment(ALIGN_CENTER, ALIGN_MIDDLE);
 	cancelTxt->SetPosition(screenwidth / 2, screenheight / 2 + 90);
 
@@ -75,30 +77,33 @@ StartUpProcess::StartUpProcess()
 
 	cancelBtn = new GuiButton(0, 0);
 	cancelBtn->SetTrigger(trigB);
-
+/*
 	trigA = new GuiTrigger;
 	trigA->SetButtonOnlyTrigger(-1, WPAD_BUTTON_A | WPAD_CLASSIC_BUTTON_A, PAD_BUTTON_A);
 
 	sdmodeBtn = new GuiButton(0, 0);
 	if (strncmp(Settings.ConfigPath, "sd", 2) == 0)
 		sdmodeBtn->SetTrigger(trigA);
-
+*/
 	drawCancel = false;
+	SetTextf(""); // Initialize text system to prevent hang when debug mode is disabled
 }
 
 StartUpProcess::~StartUpProcess()
 {
 	delete background;
-	delete GXImageData;
-	delete GXImage;
-	delete titleTxt;
+//	delete GXImageData;
+//	delete GXImage;
 	delete messageTxt;
-	delete versionTxt;
+	if (debug_to_file_setting) {
+		delete titleTxt;
+		delete versionTxt;
+	}
 	delete cancelTxt;
 	delete cancelBtn;
-	delete sdmodeBtn;
+//	delete sdmodeBtn;
 	delete trigB;
-	delete trigA;
+//	delete trigA;
 }
 
 int StartUpProcess::ParseArguments(int argc, char *argv[])
@@ -142,6 +147,23 @@ int StartUpProcess::ParseArguments(int argc, char *argv[])
 			ptr = strcasestr(argv[i], "-sdmode=");
 			if (ptr)
 				Settings.SDMode = LIMIT(atoi(ptr + strlen("-sdmode=")), 0, 1);
+		}
+
+		ptr = strcasestr(argv[i], "-codespath=");
+		if (ptr)
+		{
+			ptr += strlen("-codespath=");
+			if (*ptr != '\0')
+			{
+				snprintf(Settings.ConfigPath, sizeof(Settings.ConfigPath), "%s/launcher/", ptr);
+				snprintf(Settings.Cheatcodespath, sizeof(Settings.Cheatcodespath), "%s/", ptr);
+			}
+		}
+
+		ptr = strcasestr(argv[i], "-debug=");
+		if (ptr)
+		{
+			debug_to_file_setting = LIMIT(atoi(ptr + strlen("-debug=")), 0, 1);
 		}
 
 		if ((strlen(argv[i]) == 6 || strlen(argv[i]) == 4) && strchr(argv[i], '=') == 0 && strchr(argv[i], '-') == 0)
@@ -193,6 +215,27 @@ void StartUpProcess::SetTextf(const char *format, ...)
 		free(tmp);
 }
 
+void StartUpProcess::SetDebugTextf(const char *format, ...)
+{
+	if (!debug_to_file_setting)
+		return;
+
+	char *tmp = NULL;
+	va_list va;
+	va_start(va, format);
+	if ((vasprintf(&tmp, format, va) >= 0) && tmp)
+	{
+		TextFade(-40);
+		gprintf(tmp);
+		messageTxt->SetText(tmp);
+		TextFade(40);
+	}
+	va_end(va);
+
+	if (tmp)
+		free(tmp);
+}
+
 bool StartUpProcess::USBSpinUp()
 {
 	drawCancel = true;
@@ -223,18 +266,18 @@ bool StartUpProcess::USBSpinUp()
 		for (int i = 0; i < 4; ++i)
 		{
 			cancelBtn->Update(&userInput[i]);
-			sdmodeBtn->Update(&userInput[i]);
+//			sdmodeBtn->Update(&userInput[i]);
 		}
 
 		if (cancelBtn->GetState() == STATE_CLICKED)
 			break;
-
+/*
 		if (sdmodeBtn->GetState() == STATE_CLICKED)
 		{
 			Settings.SDMode = ON;
 			break;
 		}
-
+*/
 		messageTxt->SetTextf("Waiting for USB devices: %i sec left\n", 20 - (int)countDown.elapsed());
 		Draw();
 		usleep(50000);
@@ -247,7 +290,7 @@ bool StartUpProcess::USBSpinUp()
 
 int StartUpProcess::Run(int argc, char *argv[])
 {
-	bool isBadBoot = false;
+//	bool isBadBoot = false;
 	// A normal launch should always have the first arg be the path
 	char *ptr = strrchr(argv[0], '/');
 	if (ptr && (argv[0][2] == ':' || argv[0][3] == ':'))
@@ -263,15 +306,15 @@ int StartUpProcess::Run(int argc, char *argv[])
 			snprintf(Settings.ConfigPath, sizeof(Settings.ConfigPath), "%s/", argv[0]);
 		gprintf("Loader path: %s\n", Settings.ConfigPath);
 	}
-	// Priiloader breaks updates and passes outdated meta.xml info
+/*	// Priiloader breaks updates and passes outdated meta.xml info
 	else if (strncmp(argv[0], "/title/00000001/", 16) == 0)
 		isBadBoot = true;
-
+*/
 	int quickGameBoot = ParseArguments(argc, argv);
 
 	StartUpProcess Process;
 
-	int ret = Process.Execute(quickGameBoot != -1, isBadBoot);
+	int ret = Process.Execute(quickGameBoot != -1/*, isBadBoot*/);
 
 	if (quickGameBoot != -1)
 		return QuickGameBoot(argv[quickGameBoot]);
@@ -281,18 +324,19 @@ int StartUpProcess::Run(int argc, char *argv[])
 
 void StartUpProcess::LoadIOS(u8 ios, bool boot)
 {
-	SetTextf("Reloading to IOS%d%s\n", ios, boot ? " requested in meta.xml" : "");
+	SetDebugTextf("Reloading to IOS%d%s\n", ios, boot ? " requested in meta.xml" : "");
 	if (IosLoader::LoadAppCios(ios) < 0)
 	{
 		SetTextf("Failed to load an IOS. USB Loader GX requires a cIOS or IOS58 with AHB access. Exiting...\n");
 		sleep(5);
 		Sys_BackToLoader();
 	}
-	SetTextf("Reloaded to IOS%d r%d\n", Settings.LoaderIOS, IOS_GetRevision());
+	SetDebugTextf("Reloaded to IOS%d r%d\n", Settings.LoaderIOS, IOS_GetRevision());
 }
 
-int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
+int StartUpProcess::Execute(bool quickGameBoot/*, bool isBadBoot*/)
 {
+/*
 	if (isBadBoot)
 	{
 		SetTextf("Install the UNEO channel booter instead\n");
@@ -303,7 +347,7 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 		DCFlushRange((void *)0x817FEFF0, 4);
 		SYS_ResetSystem(SYS_RETURNTOMENU, 0, 0);
 	}
-
+*/
 	Settings.EntryIOS = IOS_GetVersion();
 	isWiiVC = IsWiiVCActive();
 
@@ -323,15 +367,15 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 	IosLoader::GetD2XInfo();
 
 	gprintf("Current IOS: %d - have AHB access: %s\n", Settings.EntryIOS, AHBPROT_DISABLED ? "yes" : "no");
-
+/*
 	// Reload to a cIOS if running as a Wii U vWii VC inject
 	if (isWiiVC)
 	{
 		Settings.SDMode = ON;
 		LoadIOS(Settings.LoaderIOS, false);
 	}
-	// Reload to a cIOS if we're using both USB ports
-	else if (Settings.USBPort == 2 && !Settings.SDMode)
+*/	// Reload to a cIOS if we're using both USB ports
+	if (Settings.USBPort == 2 && !Settings.SDMode)
 		LoadIOS(Settings.LoaderIOS, false);
 
 	// Reload to a cIOS if required (old forwarder?) or requested
@@ -345,7 +389,7 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 	bool USBSuccess = false;
 	if (!isWiiVC && !Settings.SDMode)
 	{
-		SetTextf("Initializing USB devices\n");
+		SetDebugTextf("Initializing USB devices\n");
 		if (USBSpinUp())
 		{
 			DeviceHandler::Instance()->MountAllUSB(false);
@@ -355,12 +399,22 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 	}
 
 	// Mount the SD card
-	SetTextf("Initializing SD card\n");
+	SetDebugTextf("Initializing SD card\n");
 	DeviceHandler::Instance()->MountSD();
 
-	SetTextf("Loading config files\n");
+	SetDebugTextf("Loading config files\n");
+
+	if (strlen(Settings.ConfigPath) == 0)
+	{
+		gprintf("Error: No ConfigPath specified - codes path missing from meta.xml\n");
+		SetTextf("No codes path specified in meta.xml\n");
+		Draw();
+		sleep(3);
+		exit(0);
+	}
+
 	gprintf("\tLoading config...%s\n", Settings.Load() ? "done" : "failed");
-	gprintf("\tLoading language...%s\n", Settings.LoadLanguage(Settings.language_path, CONSOLE_DEFAULT) ? "done" : "failed");
+/*  gprintf("\tLoading language...%s\n", Settings.LoadLanguage(Settings.language_path, CONSOLE_DEFAULT) ? "done" : "failed");
 	gprintf("\tLoading game settings...%s\n", GameSettings.Load(Settings.ConfigPath) ? "done" : "failed");
 	gprintf("\tLoading game statistics...%s\n", GameStatistics.Load(Settings.ConfigPath) ? "done" : "failed");
 	gprintf("\tLoading game categories...%s\n", GameCategories.Load(Settings.ConfigPath) ? "done" : "failed");
@@ -376,7 +430,7 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 		Settings.AutobootDiscs = OFF;
 		Settings.skipSaving = true;
 	}
-
+*/
 	// Reload to users settings if different than current IOS, and if not using an injected WiiU WiiVC IOS255 (fw.img)
 	if (Settings.LoaderIOS != IOS_GetVersion() && !isWiiVC)
 	{
@@ -396,9 +450,9 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 		// Now load the cIOS that was set in the settings menu
 		if (IosLoader::LoadAppCios(Settings.LoaderIOS) > -1)
 		{
-			SetTextf("Reloaded to IOS%d r%d\n", Settings.LoaderIOS, IOS_GetRevision());
+			SetDebugTextf("Reloaded to IOS%d r%d\n", Settings.LoaderIOS, IOS_GetRevision());
 			// Re-Mount devices
-			SetTextf("Reinitializing devices\n");
+			SetDebugTextf("Reinitializing devices\n");
 		}
 		gprintf("Current IOS: %d - have AHB access: %s\n", IOS_GetVersion(), AHBPROT_DISABLED ? "yes" : "no");
 
@@ -412,10 +466,10 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 				DeviceHandler::Instance()->MountAllUSB(false);
 		}
 	}
-
+/*
 	if (!isWiiVC)
 		editMetaArguments();
-
+*/
 	if (!IosLoader::IsHermesIOS() && !IosLoader::IsD2X() && !Settings.SDMode)
 	{
 		Settings.USBPort = 0;
@@ -435,7 +489,7 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 	// Enable isfs permission if using Hermes v4 without AHB, or WiiU WiiVC (IOS255 fw.img)
 	if (IOS_GetVersion() < 200 || (IosLoader::IsHermesIOS() && IOS_GetRevision() == 4) || isWiiVC)
 	{
-		SetTextf("Patching IOS%d\n", IOS_GetVersion());
+		SetDebugTextf("Patching IOS%d\n", IOS_GetVersion());
 		if (IosPatch_RUNTIME(!isWiiVC, false, false, isWiiVC, false) == ERROR_PATCH)
 			gprintf("Patching IOS%d failed!\n", IOS_GetVersion());
 		else
@@ -446,25 +500,25 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 
 	// Initialize again
 	ISFS_Initialize();
-
+/*
 	// Check MIOS version
 	SetTextf("Checking installed MIOS\n");
 	IosLoader::GetMIOSInfo();
-
-	if (Settings.AutobootDiscs == ON)
+*/
+	if (Settings.SDMode == ON)
 	{
-		Timer countDown;
-		bool skipDiscAutoboot = false;
-		s32 delay = 0;
+//		Timer countDown;
+//		bool skipDiscAutoboot = false;
+//		s32 delay = 0;
 		u32 DiscDriveCover = 0;
 
 		Disc_Init();
 		WDVD_GetCoverStatus(&DiscDriveCover);
 		if (DiscDriveCover & 0x02)
 		{
-			drawCancel = true;
+//			drawCancel = true;
 			gprintf("Disc found in drive\n");
-			cancelTxt->SetText("Press B to cancel");
+/*			cancelTxt->SetText("Press B to cancel");
 			do
 			{
 				UpdatePads();
@@ -481,14 +535,14 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 				Draw();
 				usleep(50000);
 			} while (countDown.elapsed() < (float)Settings.AutobootDiscsDelay);
-
-			drawCancel = false;
-			if (skipDiscAutoboot == false)
-			{
-				messageTxt->SetTextf("Booting from disc\n");
+*/
+//			drawCancel = false;
+//			if (skipDiscAutoboot == false)
+//			{
+				SetDebugTextf("Booting from disc\n");
 				Draw();
 				return AutobootDisc();
-			}
+//			}
 		}
 		else
 		{
@@ -496,9 +550,9 @@ int StartUpProcess::Execute(bool quickGameBoot, bool isBadBoot)
 			WDVD_Close();
 		}
 	}
-	return FinalizeExecute();
+	return -1;
 }
-
+/*
 int StartUpProcess::FinalizeExecute()
 {
 	SetTextf("Loading resources\n");
@@ -523,14 +577,16 @@ int StartUpProcess::FinalizeExecute()
 
 	return 0;
 }
-
+*/
 void StartUpProcess::Draw()
 {
 	background->Draw();
-	GXImage->Draw();
-	titleTxt->Draw();
+//	GXImage->Draw();
+	if (debug_to_file_setting) {
+		titleTxt->Draw();
+		versionTxt->Draw();
+	}
 	messageTxt->Draw();
-	versionTxt->Draw();
 	if (drawCancel)
 		cancelTxt->Draw();
 	Menu_Render();
@@ -550,8 +606,8 @@ int StartUpProcess::QuickGameBoot(const char *gameID)
 	if (!header)
 		return -1;
 
-	GameStatistics.SetPlayCount(header->id, GameStatistics.GetPlayCount(header->id) + 1);
-	GameStatistics.Save();
+//	GameStatistics.SetPlayCount(header->id, GameStatistics.GetPlayCount(header->id) + 1);
+//	GameStatistics.Save();
 
 	return GameBooter::BootGame(header);
 }
@@ -559,18 +615,19 @@ int StartUpProcess::QuickGameBoot(const char *gameID)
 int StartUpProcess::AutobootDisc()
 {
 	struct discHdr *header = new struct discHdr;
-	if (Disc_Mount(header) < 0)
+	int mountResult = Disc_Mount(header);
+	if (mountResult < 0 || strncasecmp((char *)header->id, "RSB", 3) != 0)
 	{
 		delete header;
-		header = NULL;
-		SetTextf("Error mounting disc\n");
+//		header = NULL;
+		SetTextf("Error mounting disc. Must be Super Smash Bros. Brawl\n");
 		sleep(3);
-		return FinalizeExecute();
+		return -1;
 	}
 	else
 	{
-		GameStatistics.SetPlayCount(header->id, GameStatistics.GetPlayCount(header->id) + 1);
-		GameStatistics.Save();
+//		GameStatistics.SetPlayCount(header->id, GameStatistics.GetPlayCount(header->id) + 1);
+//		GameStatistics.Save();
 		return GameBooter::BootGame(header);
 	}
 }

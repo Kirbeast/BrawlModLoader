@@ -7,6 +7,7 @@ extern "C"
 {
 #endif
 
+	extern short debug_to_file_setting;
 	char ascii(char s);
 
 #ifndef NO_DEBUG

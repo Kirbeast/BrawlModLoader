@@ -44,7 +44,7 @@ CSettings::CSettings()
 {
 	CONF_Init();
 	strcpy(BootDevice, "sd:");
-	snprintf(ConfigPath, sizeof(ConfigPath), "%s/apps/usbloader_gx/", BootDevice);
+//	snprintf(ConfigPath, sizeof(ConfigPath), "%s/apps/usbloader_gx/", BootDevice);
 	this->SetDefault();
 	FirstTimeRun = true;
 }
@@ -64,7 +64,7 @@ void CSettings::SetDefault()
 	snprintf(BNRCachePath, sizeof(BNRCachePath), "%scache_bnr/", ConfigPath);
 	snprintf(GameHeaderCachePath, sizeof(GameHeaderCachePath), "%scache/", ConfigPath);
 	snprintf(homebrewapps_path, sizeof(homebrewapps_path), "%s/apps/", BootDevice);
-	snprintf(Cheatcodespath, sizeof(Cheatcodespath), "%s/codes/", BootDevice);
+//	snprintf(Cheatcodespath, sizeof(Cheatcodespath), "%s/codes/", BootDevice);
 	snprintf(TxtCheatcodespath, sizeof(TxtCheatcodespath), "%s/txtcodes/", BootDevice);
 	snprintf(BcaCodepath, sizeof(BcaCodepath), "%s/bca/", BootDevice);
 	snprintf(WipCodepath, sizeof(WipCodepath), "%s/wip/", BootDevice);
@@ -105,12 +105,12 @@ void CSettings::SetDefault()
 	godmode = 1;
 	videomode = VIDEO_MODE_DISCDEFAULT;
 	videopatch = OFF;
-	videoPatchDol = OFF;
+	videoPatchDol = VIDEO_PATCH_DOL_REGION;
 	patchFix480p = ON;
 	deflicker = DEFLICKER_AUTO;
 	videoWidth = WIDTH_AUTO;
 	language = CONSOLE_DEFAULT;
-	ocarina = OCARINA_OFF;
+	ocarina = OCARINA_ON;
 	hddinfo = CLOCK_HR12;
 	sinfo = GAMEINFO_REGION;
 	rumble = ON;
@@ -138,14 +138,14 @@ void CSettings::SetDefault()
 	autonetwork = ON;
 	patchcountrystrings = OFF;
 	TitlesType = TITLETYPE_FROMWIITDB;
-	CacheCheck = ON;
+	CacheCheck = OFF;
 	CacheCheckCRC = 0;
-	CacheTitles = ON;
+	CacheTitles = OFF;
 	screensaver = SCREENSAVER_10_MIN;
 	musicloopmode = ON;
-	marknewtitles = ON;
-	ShowFreeSpace = ON;
-	ShowGameCount = ON;
+	marknewtitles = OFF;
+	ShowFreeSpace = OFF;
+	ShowGameCount = OFF;
 	PlaylogUpdate = OFF;
 	ParentalBlocks = BLOCK_ALL;
 	InstallToDir = INSTALL_TO_NAME_GAMEID;
@@ -173,7 +173,7 @@ void CSettings::SetDefault()
 	UseSystemFont = ON;
 	AutobootDiscs = OFF;
 	AutobootDiscsDelay = 3;
-	Hooktype = 0;
+	Hooktype = 7;
 	WiirdDebugger = OFF;
 	WiirdDebuggerPause = OFF;
 	wpadMotor = FALSE;
@@ -246,7 +246,7 @@ void CSettings::SetDefault()
 	DEVODiscDelay = OFF;
 	GCInstallCompressed = OFF;
 	GCInstallAligned = OFF;
-	PrivateServer = OFF;
+	PrivateServer = PRIVSERV_WIIMMFI;
 	ProxyUseSystem = ON;
 	ProxyPort = 0;
 }
@@ -258,7 +258,7 @@ bool CSettings::Load()
 	SetDefault();
 
 	char filepath[300];
-	snprintf(filepath, sizeof(filepath), "%sGXGlobal.cfg", ConfigPath);
+	snprintf(filepath, sizeof(filepath), "%sloader.cfg", ConfigPath);
 
 	FILE * file = fopen(filepath, "r");
 	if (!file) return false;
@@ -295,18 +295,17 @@ bool CSettings::ValidVersion(FILE * file)
 
 	while (fgets(line, sizeof(line), file))
 	{
-		const char * ptr = strcasestr(line, "USB Loader GX R");
+		const char * ptr = strcasestr(line, "Brawl Mod Loader");
 		if(ptr)
 		{
-			ptr += strlen("USB Loader GX R");
-			revision = atoi(ptr);
-			break;
+			ptr += strlen("Brawl Mod Loader");
+			rewind(file);
+			return true;
 		}
 	}
 
 	rewind(file);
-
-	return revision >= VALID_CONFIG_REV;
+	return false;
 }
 
 bool CSettings::Reset()
@@ -317,11 +316,11 @@ bool CSettings::Reset()
 	if (SDMode)
 		partition = backupPartition;
 
-	if (this->Save()) return true;
+//	if (this->Save()) return true;
 
 	return false;
 }
-
+/*
 bool CSettings::Save()
 {
 	// Quick game booting doesn't need to save
@@ -551,7 +550,7 @@ bool CSettings::Save()
 
 	return true;
 }
-
+*/
 bool CSettings::ValidateURL(char *value, int type)
 {
 	if (strlen(value) >= 12 && (strncmp(value, "https://", 8) == 0 || strncmp(value, "http://", 7) == 0))
@@ -1564,7 +1563,7 @@ bool CSettings::FindConfig()
 	{
 		*ptr = 0;
 		// Check if the config file is in the same location as the executable
-		snprintf(CheckPath, sizeof(CheckPath), "%sGXGlobal.cfg", ConfigPath);
+		snprintf(CheckPath, sizeof(CheckPath), "%sloader.cfg", ConfigPath);
 
 		FILE *fp = fopen(CheckPath, "ab+");
 		if (fp)
@@ -1574,7 +1573,7 @@ bool CSettings::FindConfig()
 			return true;
 		}
 	}
-
+/*
 	// Enumerate the devices supported by libogc
 	char CheckDevice[73];
 	for (int i = SD; i < MAXDEVICES; ++i)
@@ -1592,7 +1591,7 @@ bool CSettings::FindConfig()
 			return true;
 		}
 	}
-
+*/
 	return false;
 }
 
