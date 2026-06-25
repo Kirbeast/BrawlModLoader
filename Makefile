@@ -50,18 +50,16 @@ SOURCES		:=	source \
 				source/utils/minizip \
 				source/usbloader/wbfs \
 				source/cache
-DATA		:=	data/images \
-				data/fonts \
-				data/sounds \
+DATA		:=	data/fonts \
 				data/binary
 INCLUDES	:=	source
 
 #---------------------------------------------------------------------------------
 # Options for code generation
 #---------------------------------------------------------------------------------
-CFLAGS		=	-ggdb -Os -Wall -Wno-multichar -Wno-unused-parameter -Wextra $(MACHDEP) $(INCLUDE) -D_GNU_SOURCE -DNDEBUG -DWOLFSSL_USER_SETTINGS
+CFLAGS		=	-ggdb -Os -Wall -Wno-multichar -Wno-unused-parameter -Wextra -ffunction-sections -fdata-sections $(MACHDEP) $(INCLUDE) -D_GNU_SOURCE -DNDEBUG -DWOLFSSL_USER_SETTINGS
 CXXFLAGS	=	$(CFLAGS)
-LDFLAGS		=	-ggdb $(MACHDEP) -Wl,-Map,$(notdir $@).map,--section-start,.init=0x80B00000,-wrap,malloc,-wrap,free,-wrap,memalign,-wrap,calloc,-wrap,realloc,-wrap,malloc_usable_size
+LDFLAGS		=	-ggdb $(MACHDEP) -Wl,-Map,$(notdir $@).map,--gc-sections,--section-start,.init=0x80B00000,-wrap,malloc,-wrap,free,-wrap,memalign,-wrap,calloc,-wrap,realloc,-wrap,malloc_usable_size
 
 ifeq ($(BUILDMODE),channel)
 	CFLAGS += -DFULLCHANNEL
@@ -104,7 +102,7 @@ export CFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(sort $(wildcard $(dir)/*.c)
 export CPPFILES	:=	$(foreach dir,$(SOURCES),$(notdir $(sort $(wildcard $(dir)/*.cpp))))
 sFILES			:=	$(foreach dir,$(SOURCES),$(notdir $(sort $(wildcard $(dir)/*.s))))
 SFILES			:=	$(foreach dir,$(SOURCES),$(notdir $(sort $(wildcard $(dir)/*.S))))
-DATAFILES		:=	$(foreach dir,$(DATA),$(notdir $(sort $(wildcard $(dir)/*.*))))
+DATAFILES		:=	$(filter-out clock.ttf,$(foreach dir,$(DATA),$(notdir $(sort $(wildcard $(dir)/*.*)))))
 
 #---------------------------------------------------------------------------------
 # Use CXX for linking C++ projects, CC for standard C

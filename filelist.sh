@@ -16,7 +16,7 @@ else
 fi
 
 count=0
-for i in $($FIND ./data/images/ ./data/sounds/ ./data/fonts/ ./data/binary/ -maxdepth 1 -type f  \( ! -printf "%f\n" \))
+for i in $($FIND ./data/fonts/ ./data/binary/ -maxdepth 1 -type f ! -name 'clock.ttf'  \( ! -printf "%f\n" \))
 do
 	files[count]=$i
 	count=$((count+1))
