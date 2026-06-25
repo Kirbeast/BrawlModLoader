@@ -338,7 +338,7 @@ int GameList::FilterList(const wchar_t *gameFilter)
 	EnabledList();
 	InternalFilterList(EnabledGameList);
 
-	NewTitles::Instance()->Save();
+//	NewTitles::Instance()->Save();
 	GuiSearchBar::FilterList(FilteredList, GameFilter);
 
 	SortList();
@@ -353,7 +353,7 @@ void GameList::InternalLoadUnfiltered(std::vector<struct discHdr *> &FullList)
 		struct discHdr *header = FullList[i];
 
 		/* Register game */
-		NewTitles::Instance()->CheckGame(header->id);
+//		NewTitles::Instance()->CheckGame(header->id);
 
 		FilteredList.push_back(header);
 	}
@@ -367,7 +367,7 @@ int GameList::LoadUnfiltered()
 	EnabledList();
 	InternalLoadUnfiltered(EnabledGameList);
 
-	NewTitles::Instance()->Save();
+//	NewTitles::Instance()->Save();
 	GuiSearchBar::FilterList(FilteredList, GameFilter);
 
 	SortList();
