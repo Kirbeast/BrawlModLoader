@@ -47,9 +47,7 @@ int main(int argc, char *argv[])
 
 	setlocale(LC_ALL, "en_US.UTF-8");
 
-	if(StartUpProcess::Run(argc, argv) < 0)
-		return -1;
-
-	MainMenu(MENU_DISCLIST);
+	// Not referencing MainMenu lets --gc-sections strip the entire menu subsystem.
+	StartUpProcess::Run(argc, argv);
 	return 0;
 }
