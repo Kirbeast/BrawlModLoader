@@ -413,11 +413,11 @@ int GameList::GetGameListHeaders(std::vector<struct discHdr *> &tmplist, short L
 			ReadGameList(true);
 		InternalGetGameListHeaders(tmplist, FullGameList);
 	}
-
+/*
 	// Filter GC game list if selected
 	if (LoaderMode & MODE_GCGAMES)
 		InternalGetGameListHeaders(tmplist, GCGames::Instance()->GetHeaders());
-
+*/
 	// Filter NAND channel list if selected
 	if (LoaderMode & MODE_NANDCHANNELS)
 		InternalGetGameListHeaders(tmplist, Channels::Instance()->GetNandHeaders());

@@ -290,8 +290,8 @@ int GameBooter::BootGame(struct discHdr *gameHdr, const s8 useOcarina)
 	if (Settings.Wiinnertag)
 		Wiinnertag::TagGame((const char *)gameHeader.id);
 
-	if (gameHeader.type == TYPE_GAME_GC_IMG || gameHeader.type == TYPE_GAME_GC_DISC || gameHdr->type == TYPE_GAME_GC_EXTRACTED)
-		return BootGCMode(&gameHeader);
+//	if (gameHeader.type == TYPE_GAME_GC_IMG || gameHeader.type == TYPE_GAME_GC_DISC || gameHdr->type == TYPE_GAME_GC_EXTRACTED)
+//		return BootGCMode(&gameHeader);
 
 	//! Setup game configuration from game settings. If no game settings exist use global/default.
 	GameCFG *game_cfg = GameSettings.GetGameCFG(gameHeader.id);
@@ -668,9 +668,9 @@ int GameBooter::BootGame(struct discHdr *gameHdr, const s8 useOcarina)
 	//! Now we can free up the memory used by the game/channel lists
 	gameList.clear();
 	GameTitles.Clear();
-	GCGames::Instance()->clear();
+	// GCGames::Instance()->clear();
 	Channels::Instance()->clear();
-	GCGames::DestroyInstance();
+	// GCGames::DestroyInstance();
 	Channels::DestroyInstance();
 
 	//! Load main.dol or alternative dol into memory, start the game apploader and get game entrypoint
