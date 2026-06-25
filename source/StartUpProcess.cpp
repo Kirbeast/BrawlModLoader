@@ -620,7 +620,7 @@ int StartUpProcess::AutobootDisc()
 	{
 		delete header;
 //		header = NULL;
-		SetTextf("Error mounting disc. Must be Super Smash Bros. Brawl\n");
+		SetTextf(mountResult < 0 ? "Error mounting disc\n" : "Disc is not Super Smash Bros. Brawl\n");
 		sleep(3);
 		return -1;
 	}
